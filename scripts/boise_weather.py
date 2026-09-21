@@ -1,4 +1,4 @@
-from you_knowledge_demos.client import run
+from ydc_knowledge_samples.client import run
 
 QUERY = "What's the weather in Boise, Idaho?"
 
