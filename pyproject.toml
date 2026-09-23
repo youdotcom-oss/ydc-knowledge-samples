@@ -1,12 +1,12 @@
 [project]
 name = "ydc-knowledge-samples"
 version = "0.1.0"
-description = "You.com Knowledge launch blog example queries"
+description = "Runnable examples and benchmarks for You.com Knowledge"
 requires-python = ">=3.11"
 dependencies = [
     "httpx>=0.28",
+    "youdotcom>=3.5.0",
 ]
 
-[build-system]
-requires = ["uv_build>=0.12.17,<0.13.0"]
-build-backend = "uv_build"
+[tool.uv]
+package = false
