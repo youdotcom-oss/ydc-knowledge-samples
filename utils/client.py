@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import argparse
 import time
 
 from youdotcom.models import SearchResponse
@@ -13,29 +12,14 @@ from utils.synthesize import synthesize
 SEARCH_COST_PER_CALL = 5.00 / 1000  # $5 / 1k calls
 
 
-def _wants_synthesis() -> bool:
-    parser = argparse.ArgumentParser(add_help=True)
-    parser.add_argument(
-        "--synthesize",
-        action="store_true",
-        help="ask GPT-5.6 Luna (OpenRouter) to summarize results; needs OPENROUTER_API_KEY",
-    )
-    return parser.parse_args().synthesize
-
-
 def finish(
     query: str,
     response: SearchResponse,
     *,
     round_trip_s: float,
-    synthesize_results: bool | None = None,
+    synthesize_results: bool = False,
 ) -> None:
-    """Print the optional Luna summary and costs, then latency.
-
-    When ``synthesize_results`` is None, it follows the ``--synthesize`` CLI flag.
-    """
-    if synthesize_results is None:
-        synthesize_results = _wants_synthesis()
+    """Print the optional Luna summary and costs, then latency."""
     synth_s = None
     if synthesize_results:
         print()

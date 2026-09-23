@@ -13,7 +13,7 @@ from youdotcom import You
 
 with You() as you:
     response = you.search(
-        query="US policy rate vs Japan policy rate and USD/JPY exchange rate",
+        query="How much did NASA pay out in federal contract outlays in FY2025?",
         knowledge="core",
     )
 
@@ -29,7 +29,7 @@ The same request with curl:
 curl -s https://ydc-index.io/v1/search \
   -H "X-API-Key: $YDC_API_KEY" \
   -H "Content-Type: application/json" \
-  -d '{"query": "US policy rate vs Japan policy rate and USD/JPY exchange rate", "knowledge": "core"}' \
+  -d '{"query": "How much did NASA pay out in federal contract outlays in FY2025?", "knowledge": "core"}' \
   | jq '.results.knowledge'
 ```
 
@@ -45,12 +45,12 @@ make big-mac     # What's the Big Mac Index for Japan versus the US?
 make nvidia      # What's Nvidia's stock price?
 make weather     # What's the weather in Boise, Idaho?
 make bitcoin     # What's the BTC to USD price right now?
-make yen-carry   # US policy rate vs Japan policy rate and USD/JPY exchange rate
+make nasa        # How much did NASA pay out in federal contract outlays in FY2025?
 make interactive # paste queries in a loop
 make all         # run all five
 ```
 
-Each `make` target runs a module, for example `uv run python -m demos.nvidia`. The demos import shared helpers from [`utils/`](../utils), so run them from the repo root with `-m` rather than as `python demos/nvidia.py`.
+All five queries live in [`run.py`](run.py), and each target calls it by name, for example `uv run python -m demos.run nvidia`. It imports shared helpers from [`utils/`](../utils), so run it from the repo root with `-m` rather than as `python demos/run.py`.
 
 Each demo prints `results.knowledge` first (title, attribution, `as_of`, description), then `results.web`, then `results.news`, then latency. Search-only is the default, so you only need `YDC_API_KEY`.
 
@@ -60,7 +60,7 @@ With `OPENROUTER_API_KEY` set in `.env`, any demo can pass the results to [GPT-5
 
 ```bash
 make nvidia SYNTH=1
-uv run python -m demos.nvidia --synthesize
+uv run python -m demos.run nvidia --synthesize
 make interactive SYNTH=1   # or type /synth inside the loop
 ```
 
@@ -106,16 +106,15 @@ The cards each query returns, with the source that licenses the data. Descriptio
 
 The query says `BTC to USD` rather than `Bitcoin`. Asking for `BTC` alone also matches unrelated entities (a `BTC Funding` card, and a London BTC Company stock card), and asking for `Bitcoin` pulls in a Mercado Bitcoin funding card.
 
-### `make yen-carry`: US policy rate vs Japan policy rate and USD/JPY exchange rate
-
-One call covering both legs of the carry trade plus the exchange rate.
+### `make nasa`: How much did NASA pay out in federal contract outlays in FY2025?
 
 | Card | Attribution |
 | --- | --- |
-| United States, Japan - Central Bank Policy Rate | Bank for International Settlements |
-| Currency Exchange: Japanese Yen (JPY) to US Dollar (USD) | Xignite |
-| Currency Exchange: US Dollar (USD) to Japanese Yen (JPY) | Xignite |
+| National Aeronautics and Space Administration — Federal Contract Outlay | U.S. Department of the Treasury |
+| National Aeronautics and Space Administration on Space Basic Research — Federal Contract Outlay | U.S. Department of the Treasury |
+| Space Basic Research — Federal Contract Outlay | U.S. Department of the Treasury |
+| NASA Budget | U.S. Department of the Treasury |
 
-> United States Central Bank Policy Rate's latest value was 3.6% in Aug 2026, up 0% since Feb 2026 […]; Japan Central Bank Policy Rate's latest value was 1.0% in Aug 2026, up 33.33% since Feb 2026, with a maximum of 1.0% in Jun 2026 and a minimum of 0.75% in Feb 2026. Monthly data from Feb 2026 to Aug 2026.
+> National Aeronautics and Space Administration — Federal Contract Outlay's value was $20,002,053,117 in 2025, up 16.9% since 2020. Annual data from 2020 to 2025, with a maximum of $20,002,053,117 in 2025 and a minimum of $7,286,981,936 in 2022.
 
-Both policy rates arrive in a single comparison card. The two currency cards are the same pair quoted in both directions, and which of them come back varies run to run: sometimes both, sometimes only one.
+The first card is the agency-wide total. The next two break out a single program, Space Basic Research. The `NASA Budget` card covers FY2026 to date rather than FY2025.

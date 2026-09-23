@@ -2,11 +2,34 @@
 name = "ydc-knowledge-samples"
 version = "0.1.0"
 description = "Runnable examples and benchmarks for You.com Knowledge"
-requires-python = ">=3.11"
+requires-python = ">=3.12"
 dependencies = [
     "httpx>=0.28",
     "youdotcom>=3.5.0",
 ]
 
+[dependency-groups]
+# The benchmark harness. Stirrup is Artificial Analysis's agent harness and
+# requires Python 3.12+.
+bench = [
+    "stirrup==0.2.0",
+    "openai>=2.38.0",
+]
+dev = [
+    "pytest>=8",
+    "ruff>=0.6",
+]
+
 [tool.uv]
 package = false
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

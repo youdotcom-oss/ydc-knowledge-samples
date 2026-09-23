@@ -1,0 +1,8 @@
+<Question>：
+{prompt}
+
+<Reference Answer>：
+{response_reference}
+
+<Student Answer>：
+{response}

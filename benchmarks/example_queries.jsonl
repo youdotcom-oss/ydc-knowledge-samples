@@ -1,0 +1,3 @@
+{"id": "bis-founded", "input": "In what year was the Bank for International Settlements founded?", "expected": "1930", "metadata": {"topic": "institutions"}}
+{"id": "fed-funds", "input": "What is the current target range for the US federal funds rate?", "metadata": {"topic": "macro"}}
+{"input": "What is the current USD to JPY exchange rate?"}

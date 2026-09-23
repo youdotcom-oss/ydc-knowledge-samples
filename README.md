@@ -11,14 +11,14 @@ Search costs $5 per 1,000 calls.
 
 ## What's here
 
-- **[Demos](demos/README.md):** the runnable queries from the post (Big Mac Index, Nvidia stock, Boise weather, BTC to USD, and the yen carry trade), plus an interactive loop. Each one uses the official `youdotcom` Python SDK, and the demos README shows the same call in curl.
-- **[Benchmarks](benchmarks/README.md):** how Knowledge compares with web-only search APIs on Vertical RTK, and how to reproduce the results.
+- **[Demos](demos/README.md):** the runnable queries from the post (Big Mac Index, Nvidia stock, Boise weather, BTC to USD, and NASA contract outlays), plus an interactive loop, all in one file. Each one uses the official `youdotcom` Python SDK, and the demos README shows the same call in curl.
+- **[Benchmarks](benchmarks/README.md):** our results on Tako's public VerticalRTK benchmark, and the harness to reproduce them. `make bench` runs You.com Search with and without Knowledge on the same questions, grades both, and compares them. It runs on your own questions too.
 
 Shared helpers for rendering, synthesis, and cost live in [`utils/`](utils).
 
 ## Setup
 
-Requires [uv](https://docs.astral.sh/uv/) and Python 3.11+.
+Requires [uv](https://docs.astral.sh/uv/) and Python 3.12+.
 
 ```bash
 cp .env.example .env   # then set YDC_API_KEY
@@ -32,5 +32,6 @@ make weather           # run one demo to check your key
 | --- | --- |
 | `YDC_API_KEY` | Every demo. The `youdotcom` SDK reads it from the environment. |
 | `OPENROUTER_API_KEY` | Optional. Only for GPT-5.6 Luna synthesis (`SYNTH=1` / `--synthesize`). |
+| `OPENAI_API_KEY` | Optional. Only for the benchmarks, which use it for the agent and the judge. |
 
 Run everything from the repo root. `make help` lists every target.
