@@ -1,4 +1,4 @@
-"""Terminal rendering for search results, Luna synthesis, and TCO."""
+"""Terminal rendering for search results, synthesis, and TCO."""
 
 from __future__ import annotations
 
@@ -129,15 +129,15 @@ def _plain(text: str) -> str:
     return text
 
 
-def print_synthesis(text: str) -> None:
+def print_synthesis(text: str, *, label: str = MODEL_LABEL) -> None:
     cols = width()
-    _section(f"SYNTHESIS · {MODEL_LABEL}", cols)
+    _section(f"SYNTHESIS · {label}", cols)
     print()
     print(_wrap(_plain(text), cols))
     print()
 
 
-def print_costs(search_cost: float, usage: dict) -> None:
+def print_costs(search_cost: float, usage: dict, *, label: str = MODEL_LABEL) -> None:
     cols = width()
     llm_cost = cost_usd(usage)
     tco = search_cost + llm_cost
@@ -149,7 +149,10 @@ def print_costs(search_cost: float, usage: dict) -> None:
     tokens = ""
     if prompt is not None and completion is not None:
         tokens = f"{prompt} in / {completion} out"
-    _metric(MODEL_LABEL, _usd(llm_cost), tokens)
+    if usage:
+        _metric(label, _usd(llm_cost), tokens)
+    else:
+        _metric(label, "n/a")
     _metric("Total TCO", _usd(tco), bold=True)
     print()
 
@@ -163,6 +166,7 @@ def print_latency(
     you_server_s: float | None,
     you_round_trip_s: float,
     synth_round_trip_s: float | None,
+    synth_label: str = MODEL_LABEL,
 ) -> None:
     cols = width()
     _section("LATENCY", cols)
@@ -171,7 +175,7 @@ def print_latency(
     _metric("You.com server", server)
     total = you_round_trip_s
     if synth_round_trip_s is not None:
-        _metric(MODEL_LABEL, _ms(synth_round_trip_s))
+        _metric(synth_label or MODEL_LABEL, _ms(synth_round_trip_s))
         total += synth_round_trip_s
     _metric("Total e2e", _ms(total), bold=True)
     print()

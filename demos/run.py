@@ -11,6 +11,7 @@ from youdotcom.errors import YouError
 
 from utils.client import finish
 from utils.rendering import print_query, print_results
+from utils.synthesize import BLACKBOX_MODELS, MODEL, backend_for
 
 QUERIES = {
     "big-mac": "What's the Big Mac Index for Japan versus the US?",
@@ -21,17 +22,23 @@ QUERIES = {
 }
 
 
-def search(you: You, query: str, synthesize: bool) -> None:
+def search(you: You, query: str, synthesize: bool, model: str | None) -> None:
     print_query(query)
     start = time.perf_counter()
     response = you.search(query=query, count=5, knowledge="core")
     round_trip_s = time.perf_counter() - start
     print_results(response)
-    finish(query, response, round_trip_s=round_trip_s, synthesize_results=synthesize)
+    finish(
+        query,
+        response,
+        round_trip_s=round_trip_s,
+        synthesize_results=synthesize,
+        model=model,
+    )
 
 
-def interactive(you: You, synthesize: bool) -> None:
-    print("Paste a query and press enter. /synth toggles Luna. /quit exits.\n")
+def interactive(you: You, synthesize: bool, model: str | None) -> None:
+    print("Paste a query and press enter. /synth toggles synthesis. /quit exits.\n")
     while True:
         mode = "synth on" if synthesize else "search only"
         try:
@@ -49,7 +56,7 @@ def interactive(you: You, synthesize: bool) -> None:
             continue
         print()
         try:
-            search(you, query, synthesize)
+            search(you, query, synthesize, model)
         except YouError as exc:
             print(f"search failed: {exc}")
         print()
@@ -69,19 +76,32 @@ def main() -> None:
     parser.add_argument(
         "--synthesize",
         action="store_true",
-        help="GPT-5.6 Luna summary of each result (needs OPENROUTER_API_KEY)",
+        help=f"summarize each result (default {MODEL} via OpenRouter; needs OPENROUTER_API_KEY)",
+    )
+    parser.add_argument(
+        "--model",
+        help=(
+            "synthesis model. Blackbox models need BB_KEY and are streamed: "
+            + ", ".join(BLACKBOX_MODELS)
+        ),
     )
     args = parser.parse_args()
+    if args.model:
+        args.synthesize = True
+    try:
+        backend_for(args.model)
+    except ValueError as exc:
+        parser.error(str(exc))
     unknown = [name for name in args.names if name not in QUERIES]
     if unknown:
         parser.error(f"unknown demo {unknown[0]!r}; choose from {', '.join(QUERIES)}")
 
     with You() as you:  # reads YDC_API_KEY from the environment
         if args.interactive:
-            interactive(you, args.synthesize)
+            interactive(you, args.synthesize, args.model)
             return
         for name in args.names or QUERIES:
-            search(you, QUERIES[name], args.synthesize)
+            search(you, QUERIES[name], args.synthesize, args.model)
 
 
 if __name__ == "__main__":

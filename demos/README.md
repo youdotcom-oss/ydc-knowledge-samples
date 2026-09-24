@@ -64,7 +64,36 @@ uv run python -m demos.run nvidia --synthesize
 make interactive SYNTH=1   # or type /synth inside the loop
 ```
 
-That adds a Luna summary plus a cost breakdown: You.com Search ($5 / 1k calls), Luna token cost, and the total.
+That adds a summary plus a cost breakdown: You.com Search ($5 / 1k calls), model token cost, and the total.
+
+Set `BB_KEY` to stream the same summary from [Blackbox](https://enterprise.blackbox.ai/chat/completions) instead. `MODEL` is one of:
+
+| Model id | Label |
+| --- | --- |
+| `nvidia/nemotron-3-ultra-550b-a55b` | Nemotron 3 Ultra |
+| `openai/gpt-oss-120b` | GPT-OSS 120B |
+| `minimax/minimax-m3` | MiniMax M3 |
+| `zai/glm-5.3-flash` | GLM 5.3 Flash |
+| `zai/glm-5.3` | GLM 5.3 |
+| `moonshotai/kimi-k3` | Kimi K3 |
+| `deepseek/deepseek-v4.1-flash` | DeepSeek V4.1 Flash |
+
+```bash
+make nvidia SYNTH=1 MODEL=nvidia/nemotron-3-ultra-550b-a55b
+```
+
+The request matches this call, with the search results as the user message and `stream` set:
+
+```bash
+curl -N -X POST https://enterprise.blackbox.ai/chat/completions \
+  -H "Authorization: Bearer $BB_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "nvidia/nemotron-3-ultra-550b-a55b",
+    "messages": [{ "role": "user", "content": "Hello, Blackbox!" }],
+    "stream": true
+  }'
+```
 
 ## Knowledge results
 

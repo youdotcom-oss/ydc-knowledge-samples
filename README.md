@@ -31,7 +31,8 @@ make weather           # run one demo to check your key
 | Variable | Needed for |
 | --- | --- |
 | `YDC_API_KEY` | Every demo. The `youdotcom` SDK reads it from the environment. |
-| `OPENROUTER_API_KEY` | Optional. Only for GPT-5.6 Luna synthesis (`SYNTH=1` / `--synthesize`). |
+| `OPENROUTER_API_KEY` | Optional. GPT-5.6 Luna synthesis (`SYNTH=1` with no `MODEL`). |
+| `BB_KEY` | Optional. Blackbox synthesis (`SYNTH=1 MODEL=<id>`). |
 | `OPENAI_API_KEY` | Optional. Only for the benchmarks, which use it for the agent and the judge. |
 
 Run everything from the repo root. `make help` lists every target.

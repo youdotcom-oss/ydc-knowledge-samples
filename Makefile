@@ -1,7 +1,8 @@
 .PHONY: help install big-mac nvidia weather bitcoin nasa interactive all bench bench-preflight bench-export bench-show test
 
 SYNTH ?=
-FLAG := $(if $(filter 1 true yes,$(SYNTH)),--synthesize)
+MODEL ?=
+FLAG := $(if $(or $(filter 1 true yes,$(SYNTH)),$(MODEL)),--synthesize) $(if $(MODEL),--model $(MODEL))
 DEMO := uv run python -m demos.run
 
 QUERIES ?=
@@ -22,7 +23,12 @@ help:
 	@echo "interactive  paste queries in a loop"
 	@echo "all          run all five examples"
 	@echo ""
-	@echo "add SYNTH=1 to any target for GPT-5.6 Luna synthesis (needs OPENROUTER_API_KEY)"
+	@echo "add SYNTH=1 to any target to summarize the results"
+	@echo "  default model is GPT-5.6 Luna via OpenRouter (needs OPENROUTER_API_KEY)"
+	@echo "  MODEL=<id> streams from Blackbox (needs BB_KEY):"
+	@echo "    nvidia/nemotron-3-ultra-550b-a55b  openai/gpt-oss-120b"
+	@echo "    minimax/minimax-m3  zai/glm-5.3-flash  zai/glm-5.3"
+	@echo "    moonshotai/kimi-k3  deepseek/deepseek-v4.1-flash"
 	@echo ""
 	@echo "bench-preflight  check keys and one live search before a benchmark"
 	@echo "bench            run You.com with and without Knowledge on VerticalRTK fast, grade, compare"
