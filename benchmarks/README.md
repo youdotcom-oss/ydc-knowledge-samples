@@ -29,8 +29,8 @@ The setup is based on the [Artificial Analysis Search API methodology](https://a
 | --- | --- |
 | Questions | VerticalRTK fast, 155 questions, pinned to the commit at the end of September 22 ([`ae470841`](https://github.com/TakoData/VerticalRTK/tree/ae470841aef53080bfeb87add5704278198114ef)) |
 | Agent | GPT-5.6 Luna, medium reasoning, via the OpenAI Responses API, told today's date |
-| Harness | [Stirrup](https://github.com/ArtificialAnalysis/Stirrup) 0.2.0, 25 turns |
-| Searches per question | 1, with 10 results per search |
+| Harness | [Stirrup](https://github.com/ArtificialAnalysis/Stirrup) 0.2.0 |
+| Searches per question | 1, with 10 results. Any further search call is refused, and the agent answers from the results it has |
 | You.com search call | `extraction={"extraction_mode": "highlights"}`, plus `knowledge="core"` for the Knowledge arm |
 | Excluded domains | 19 homework-answer and scraped-content sites, the same for every provider ([`config.py`](config.py)) |
 | Judge | GPT-5.6 Luna, medium reasoning, FinSearchComp's rubric plus one rule for numeric form; binary right or wrong |
